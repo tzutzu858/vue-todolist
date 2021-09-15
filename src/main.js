@@ -8,5 +8,5 @@ import './stylesheets/all.css'
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  render: h => h(App), //h->handle
+}).$mount('#app') // mount 到 app 上
