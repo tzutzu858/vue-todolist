@@ -84,10 +84,10 @@
 export default {
   name: "DisplayTable",
   props: {
-    displayTableComponent: {
-      type: Object,
+    allTodos: {
+      type: Array,
       default: () => {
-        return {};
+        return [];
       },
     },
   },
@@ -96,7 +96,6 @@ export default {
     return {
       title: "Todo 範例製作",
       newTodo: "",
-      todos: [],
       visibility: "all",
       cacheTodo: {},
       cacheTitle: "",
@@ -118,63 +117,35 @@ export default {
       this.cacheTodo = {};
     },
     removeTodo(item) {
-      // this.todos.splice(this.todos.indexOf(item), 1);
-      this.todos = this.filterdata(this.todos, item.id);
-      // this.todos = this.todos.filter(({ id }) => id != item.id); //盡量把 filter 功能直接變成一個 function，這樣在其他地方也可以用上
-      // this.todos.splice(index, 1) //如果用 index 來修改資料，在切換分類頁面時，data 會變，這樣 index 也跟著變
-    },
-    filterdata(array, id) {
-      return array.filter((item) => id != item.id);
+      this.allTodos.splice(this.allTodos.indexOf(item), 1);
     },
     judgeCompleted() {
       const noCompleted = [];
-      this.todos.forEach(function (item) {
+      this.allTodos.forEach(function (item) {
         if (!item.completed) {
           noCompleted.push(item);
         }
       });
       return noCompleted;
     },
-    allTodosClean() {
-      this.todos = [];
-    },
     saveDataToStorage() {
-      localStorage.aaa = JSON.stringify(this.todos);
-    }, 
+      localStorage.aaa = JSON.stringify(this.allTodos);
+    },
   },
   computed: {
-      //computed 裡的 function 一定要 return
-      filteredTodos: function () {
-        if (this.visibility == "all") {
-          return this.todos;
-        } else if (this.visibility == "active") {
-          return this.judgeCompleted();
-        } else if (this.visibility == "completed") {
-          return this.todos.filter(({ completed }) => completed); //如果用解構帶參數，()不能省
-          //return this.todos.filter(item => item.completed); //箭頭函式如果沒有 return 就要{}
-          //return this.todos.filter(function (item) { return item.completed });  //舊寫法
-        }
-        return [];
-      },
-      showNoCompleted() {
-        let num = this.judgeCompleted().length;
-        return num;
-      },
-    },
-    mounted() {
-      const allTodos = JSON.stringify(this.todos);
-      if (!localStorage.aaa) {
-        localStorage.setItem("aaa", allTodos);
-      } else {
-        this.todos = JSON.parse(localStorage.aaa);
+    //computed 裡的 function 一定要 return
+    filteredTodos: function () {
+      if (this.visibility == "all") {
+        return this.allTodos;
+      } else if (this.visibility == "active") {
+        return this.judgeCompleted();
+      } else if (this.visibility == "completed") {
+        return this.allTodos.filter(({ completed }) => completed); //如果用解構帶參數，()不能省
+        //return this.todos.filter(item => item.completed); //箭頭函式如果沒有 return 就要{}
+        //return this.todos.filter(function (item) { return item.completed });  //舊寫法
       }
+      return [];
     },
-    watch: {
-      todos(newTodos) {
-        localStorage.aaa = JSON.stringify(newTodos);
-      },
-    },
+  },
 };
 </script>
-
-<style scoped></style>
