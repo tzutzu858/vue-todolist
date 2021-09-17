@@ -1,3 +1,7 @@
+// 這支 component 主要是用 props 拿父層的 todos data 來做分類跟顯示畫面  
+// 當有編輯 todo 時，會改動 local storage(array)
+// 當 checkbox 有更動也是用 @change 去改動 local storage(array)
+// 當刪除時，用splice() 改變到原本的 array
 <template>
   <div>
     <div class="card-header">
@@ -84,6 +88,7 @@
 export default {
   name: "DisplayTable",
   props: {
+    //父層只能監聽子層事件的觸發
     allTodos: {
       type: Array,
       default: () => {
@@ -92,6 +97,14 @@ export default {
     },
   },
 
+  watch: {
+    allTodos(newValue, oldValue) {
+      console.log("new");
+      console.log(newValue);
+      console.log("old");
+      console.log(oldValue);
+    },
+  },
   data() {
     return {
       title: "Todo 範例製作",
@@ -117,7 +130,8 @@ export default {
       this.cacheTodo = {};
     },
     removeTodo(item) {
-      this.allTodos.splice(this.allTodos.indexOf(item), 1);
+       this.allTodos.splice(this.allTodos.indexOf(item), 1); // splice()、sort() 這些都會改動到原本的 array
+      // this.allTodos = this.allTodos.filter(({ id }) => id != item.id);  filter() 不會改動到原本的 array
     },
     judgeCompleted() {
       const noCompleted = [];

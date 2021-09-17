@@ -4,19 +4,17 @@
       <div class="row">
         <div class="col-md-9 post">
           <TodoTitle :msg="title" />
-          <div id="app">
-            <AddTodo
-              :newTodoComponent="newTodo"
-              @change-text="changeTextHandler"
-              @onEnter="addTodo"
-              @onClick="addTodo"
-            />
-            <div class="card text-center">
-              <DisplayTable :all-todos="todos" @all-todos="todos" />
-              <div class="card-footer d-flex justify-content-between">
-                <span>還有{{ showNoCompleted }}筆任務未完成</span>
-                <a href="#" @click="allTodosClean">清除所有任務</a>
-              </div>
+          <AddTodo
+            :newTodoComponent="newTodo"
+            @change-text="changeTextHandler"
+            @onEnter="addTodo"
+            @onClick="addTodo"
+          />
+          <div class="card text-center">
+            <DisplayTable :allTodos="todos" :key="componenKey" />
+            <div class="card-footer d-flex justify-content-between">
+              <span>還有{{ showNoCompleted }}筆任務未完成</span>
+              <a href="#" @click="allTodosClean">清除所有任務</a>
             </div>
           </div>
         </div>
@@ -44,11 +42,13 @@ export default {
       title: "Todo 範例製作",
       newTodo: "",
       todos: [],
+      componenKey: 0,
     };
   },
 
   methods: {
     changeTextHandler(val) {
+      //處理子組件傳來的 value 放到 newTodo
       this.newTodo = val;
     },
     changeArrayHandler(val) {
@@ -88,12 +88,15 @@ export default {
     },
   },
   mounted() {
-    const allTodos = JSON.stringify(this.todos);
-    if (!localStorage.aaa) {
-      localStorage.setItem("aaa", allTodos);
-    } else {
+    if (localStorage.aaa.length) {
       this.todos = JSON.parse(localStorage.aaa);
     }
+    // const allTodos = JSON.stringify(this.todos);
+    // if (!localStorage.aaa) {
+    //   localStorage.setItem("aaa", allTodos);
+    // } else {
+    //   this.todos = JSON.parse(localStorage.aaa);
+    // }
   },
   watch: {
     todos(newTodos) {
